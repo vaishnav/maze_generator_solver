@@ -57,6 +57,12 @@ def mainMenu():
         # print(mouse)
         medText = pygame.font.Font('BalsamiqSans-BoldItalic.ttf',73)
         if(buttonClick("Lets Start",300,320,400,100,12,medText)):
+            screen.fill(gray)
+
+            largeText = pygame.font.Font('CabinSketch-Bold.ttf',73)
+            title = largeText.render("Generating MAZE.....",True,purple)
+            screen.blit(title,(120,250))
+            pygame.display.update()
             mainGame(maz.createMaze(maze_size))
 
         pygame.display.update()
@@ -268,10 +274,10 @@ def breadthFirstSearch(maze):
 
 
 def mainGame(maze):
-
     screen.fill(gray)
     sleep(0.5)
     pygame.display.update()
+
 
     drawMaze(maze,False)
 
@@ -293,6 +299,7 @@ def mainGame(maze):
 
 
         if(buttonClick("Depth First Search",630,200,350,50,2,text)):
+
             if(solution != None):
                 drawMaze(maze,True)
                 sleep(0.5)
