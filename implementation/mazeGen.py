@@ -7,13 +7,13 @@ import pdb
 
 
 
-# column_width = 60
-# maze_size = (10,10)
-# wall_width = 6
+column_width = 60
+maze_size = (10,10)
+wall_width = 6
 
-column_width = 6
-maze_size = (100,100)
-wall_width = 2
+# column_width = 6
+# maze_size = (100,100)
+# wall_width = 2
 
 purple = (139, 120, 230)
 light_purple = (178, 165, 240)
@@ -77,22 +77,22 @@ def drawMaze(maze,erase):
 
     for j in range(maze_size[0]):
         for i in range(maze_size[1]):
-            x = i*column_width
-            y = j*column_width
+            x = j*column_width
+            y = i*column_width
             pygame.draw.rect(screen, light_purple,[x,y,column_width,column_width])
             neighbors_avail = maze[(i,j)]
 
             if((i-1,j) not in neighbors_avail):
-                pygame.draw.line(screen, dark_purple,(x,y),(x,y+column_width),wall_width)
+                pygame.draw.line(screen, dark_purple,(x,y),(x+column_width,y),wall_width)
 
             if((i,j+1) not in neighbors_avail):
-                pygame.draw.line(screen, dark_purple,(x,y+column_width),(x+column_width,y+column_width),wall_width)
+                pygame.draw.line(screen, dark_purple,(x+column_width,y),(x+column_width,y+column_width),wall_width)
 
             if((i+1,j) not in neighbors_avail):
-                pygame.draw.line(screen, dark_purple,(x+column_width,y+column_width),(x+column_width,y),wall_width)
+                pygame.draw.line(screen, dark_purple,(x+column_width,y+column_width),(x,y+column_width),wall_width)
 
             if((i,j-1) not in neighbors_avail):
-                pygame.draw.line(screen, dark_purple,(x+column_width,y),(x,y),wall_width)
+                pygame.draw.line(screen, dark_purple,(x,y+column_width),(x,y),wall_width)
             pygame.display.update()
             if(not erase):
                 clock.tick(480)
@@ -106,22 +106,22 @@ def drawPath(maze,maze_sol):
     for ele in maze_sol:
         i = ele[0]
         j = ele[1]
-        x = i*column_width
-        y = j*column_width
+        x = j*column_width
+        y = i*column_width
         pygame.draw.rect(screen, light_yellow,[x,y,column_width,column_width])
         neighbors_avail = maze[(i,j)]
 
         if((i-1,j) not in neighbors_avail):
-            pygame.draw.line(screen, dark_purple,(x,y),(x,y+column_width),wall_width)
+            pygame.draw.line(screen, dark_purple,(x,y),(x+column_width,y),wall_width)
 
         if((i,j+1) not in neighbors_avail):
-            pygame.draw.line(screen, dark_purple,(x,y+column_width),(x+column_width,y+column_width),wall_width)
+            pygame.draw.line(screen, dark_purple,(x+column_width,y),(x+column_width,y+column_width),wall_width)
 
         if((i+1,j) not in neighbors_avail):
-            pygame.draw.line(screen, dark_purple,(x+column_width,y+column_width),(x+column_width,y),wall_width)
+            pygame.draw.line(screen, dark_purple,(x+column_width,y+column_width),(x,y+column_width),wall_width)
 
         if((i,j-1) not in neighbors_avail):
-            pygame.draw.line(screen, dark_purple,(x+column_width,y),(x,y),wall_width)
+            pygame.draw.line(screen, dark_purple,(x,y+column_width),(x,y),wall_width)
         pygame.display.update()
         clock.tick(480)
         # clock.tick(10)
@@ -280,6 +280,7 @@ def mainGame(maze):
 
 
     drawMaze(maze,False)
+    print(maze)
 
     solution = None
 
