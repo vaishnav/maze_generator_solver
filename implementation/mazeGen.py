@@ -144,7 +144,7 @@ def buttonClick(msg,x,y,w,h,button_width,text):
         # title = text.render("Lets Start",True,purple)
         title = text.render(msg,True,light_purple)
         titleRect = title.get_rect()
-        titleRect.center = ( (x+(w/2)), (y+(h/2)) )
+        titleRect.center = ( (x+(w//2)), (y+(h//2)) )
         screen.blit(title, titleRect)
         # screen.blit(title,(340,330))
 
@@ -158,7 +158,7 @@ def buttonClick(msg,x,y,w,h,button_width,text):
         # title = text.render("Lets Start",True,light_purple)
         title = text.render(msg,True,purple)
         titleRect = title.get_rect()
-        titleRect.center = ( (x+(w/2)), (y+(h/2)) )
+        titleRect.center = ( (x+(w//2)), (y+(h//2)) )
         screen.blit(title, titleRect)
         # screen.blit(title,(340,330))
 
@@ -231,7 +231,7 @@ def greedyBestFirstSearch(maze):
     goal = (maze_size[0]-1,maze_size[1]-1)
 
     neighbors = []                             #store neighbors of each explored node
-    node = dataManage.heapNode((0,0),None,manhattanDistance((0,0),goal))                             #initial state
+    node = dataManage.heapNode((0,0),None,manhattanDistance((0,0),goal),None)                             #initial state
     explored = []                          #empty explored states except of first state
 
     # pdb.set_trace()
@@ -270,7 +270,116 @@ def greedyBestFirstSearch(maze):
 
         explored.append(node)
         for ele in neighbors:
-            next_node = dataManage.heapNode(ele,node,manhattanDistance(ele,goal))
+            next_node = dataManage.heapNode(ele,node,manhattanDistance(ele,goal),None)
+            mazeFrontier.insert(next_node)
+            # print(mazeFrontier.frontier,"\n")
+
+
+    return None
+
+def aStarSearch(maze):
+
+    mazeFrontier = dataManage.priorityq()
+
+    goal = (maze_size[0]-1,maze_size[1]-1)
+
+    neighbors = []                             #store neighbors of each explored node
+    node = dataManage.heapNode((0,0),None,manhattanDistance((0,0),goal),0)                             #initial state
+    explored = []                          #empty explored states except of first state
+
+    # pdb.set_trace()
+
+    mazeFrontier.insert(node)             #starting from first block of the maze from top left
+
+    while(not mazeFrontier.isEmpty()):
+
+        node = mazeFrontier.remove()
+
+        if(node.state == goal):
+            result = []
+            while(node.parent != None):
+                result.append(node.state)
+                node = node.parent
+
+            result.append(node.state)
+            result.reverse()
+            return result
+
+
+
+        neighbors = maze[node.state]
+
+        front_states = []                                   #elements states that are already in frontier
+        for element in mazeFrontier.frontier:
+            front_states.append(element.state)
+
+        explored_states = []                                 #element state in explored
+        for element in explored:
+            explored_states.append((element.state))
+
+
+        neighbors = list((set(neighbors)-set(explored_states))-set(front_states))      #to remove already visited neighbors
+                                                            #   from the "neighbors" list
+
+        explored.append(node)
+        for ele in neighbors:
+            step = node.steps + 1
+            next_node = dataManage.heapNode(ele,node,manhattanDistance(ele,goal)+step,step)
+            mazeFrontier.insert(next_node)
+            # print(mazeFrontier.frontier,"\n")
+
+
+    return None
+
+
+def dijkstraSearch(maze):
+
+    mazeFrontier = dataManage.priorityq()
+
+    goal = (maze_size[0]-1,maze_size[1]-1)
+
+    neighbors = []                             #store neighbors of each explored node
+    node = dataManage.heapNode((0,0),None,0,0)                             #initial state
+    explored = []                          #empty explored states except of first state
+
+    # pdb.set_trace()
+
+    mazeFrontier.insert(node)             #starting from first block of the maze from top left
+
+    while(not mazeFrontier.isEmpty()):
+
+        node = mazeFrontier.remove()
+
+        if(node.state == goal):
+            result = []
+            while(node.parent != None):
+                result.append(node.state)
+                node = node.parent
+
+            result.append(node.state)
+            result.reverse()
+            return result
+
+
+
+        neighbors = maze[node.state]
+
+        front_states = []                                   #elements states that are already in frontier
+        for element in mazeFrontier.frontier:
+            front_states.append(element.state)
+
+        explored_states = []                                 #element state in explored
+        for element in explored:
+            explored_states.append((element.state))
+
+
+        neighbors = list((set(neighbors)-set(explored_states))-set(front_states))      #to remove already visited neighbors
+                                                            #   from the "neighbors" list
+
+        explored.append(node)
+        for ele in neighbors:
+            step = node.steps + 1
+            next_node = dataManage.heapNode(ele,node,step,step)
             mazeFrontier.insert(next_node)
             # print(mazeFrontier.frontier,"\n")
 
@@ -358,7 +467,7 @@ def mainGame(maze):
 
 
 
-        if(buttonClick("Depth First Search",630,200,350,50,2,text)):
+        if(buttonClick("Depth First Search",630,140,350,50,2,text)):
 
             if(solution != None):
                 drawMaze(maze,True)
@@ -367,7 +476,7 @@ def mainGame(maze):
             # print(solution)
             drawPath(maze,solution)
 
-        if(buttonClick("Breadth First Search",630,270,350,50,2,text)):
+        if(buttonClick("Breadth First Search",630,210,350,50,2,text)):
             if(solution != None):
                 drawMaze(maze,True)
                 sleep(0.5)
@@ -375,7 +484,7 @@ def mainGame(maze):
             # print(solution)
             drawPath(maze,solution)
 
-        if(buttonClick("Greedy Best First Search",630,340,350,50,2,text)):
+        if(buttonClick("Greedy Best First Search",630,280,350,50,2,text)):
             if(solution != None):
                 drawMaze(maze,True)
                 sleep(0.5)
@@ -383,7 +492,23 @@ def mainGame(maze):
             # print(solution)
             drawPath(maze,solution)
 
-        if(buttonClick("EXIT",630,540,350,50,2,text)):
+        if(buttonClick("A* Search",630,350,350,50,2,text)):
+            if(solution != None):
+                drawMaze(maze,True)
+                sleep(0.5)
+            solution = aStarSearch(maze)
+            # print(solution)
+            drawPath(maze,solution)
+
+        if(buttonClick("Dijkstra Search",630,420,350,50,2,text)):
+            if(solution != None):
+                drawMaze(maze,True)
+                sleep(0.5)
+            solution = dijkstraSearch(maze)
+            # print(solution)
+            drawPath(maze,solution)
+
+        if(buttonClick("EXIT",630,510,350,50,2,text)):
             exit()
 
         pygame.display.update()

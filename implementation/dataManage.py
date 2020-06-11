@@ -6,10 +6,11 @@ class Node():
         self.parent = parent
 
 class heapNode():                     #as heapq internally compare every element of tuple that's why comparision operator overloading is requried
-    def __init__(self, state, parent, priority):
+    def __init__(self, state, parent, priority, steps):
         self.state = state
         self.parent = parent
         self.priority = priority
+        self.steps = steps
 
     def __lt__(self,other):
         return self.priority < other.priority
@@ -20,8 +21,8 @@ class heapNode():                     #as heapq internally compare every element
     def __gt__(self,other):
         return self.priority > other.priority
 
-    def __le__(self,other):
-        return self.priority < other.priority
+    def __ge__(self,other):
+        return self.priority >= other.priority
 
 class stack():
     def __init__(self):
