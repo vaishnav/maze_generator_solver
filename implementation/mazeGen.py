@@ -7,13 +7,13 @@ import pdb
 
 
 
-column_width = 60
-maze_size = (10,10)
-wall_width = 6
+# column_width = 60
+# maze_size = (10,10)
+# wall_width = 6
 
-# column_width = 6
-# maze_size = (100,100)
-# wall_width = 2
+column_width = 6
+maze_size = (100,100)
+wall_width = 2
 
 purple = (139, 120, 230)
 light_purple = (178, 165, 240)
@@ -166,6 +166,11 @@ def buttonClick(msg,x,y,w,h,button_width,text):
 
 
 
+def manhattanDistance(curr, goal):
+    return(abs(curr[0]-goal[0])+abs(curr[1]-goal[1]))
+
+
+
 
 def depthFirstSearch(maze):
 
@@ -215,6 +220,60 @@ def depthFirstSearch(maze):
         for ele in neighbors:
             next_node = dataManage.Node(ele,node)
             mazeFrontier.insert(next_node)
+
+    return None
+
+
+def greedyBestFirstSearch(maze):
+
+    mazeFrontier = dataManage.priorityq()
+
+    goal = (maze_size[0]-1,maze_size[1]-1)
+
+    neighbors = []                             #store neighbors of each explored node
+    node = dataManage.heapNode((0,0),None,manhattanDistance((0,0),goal))                             #initial state
+    explored = []                          #empty explored states except of first state
+
+    # pdb.set_trace()
+
+    mazeFrontier.insert(node)             #starting from first block of the maze from top left
+
+    while(not mazeFrontier.isEmpty()):
+
+        node = mazeFrontier.remove()
+
+        if(node.state == goal):
+            result = []
+            while(node.parent != None):
+                result.append(node.state)
+                node = node.parent
+
+            result.append(node.state)
+            result.reverse()
+            return result
+
+
+
+        neighbors = maze[node.state]
+
+        front_states = []                                   #elements states that are already in frontier
+        for element in mazeFrontier.frontier:
+            front_states.append(element.state)
+
+        explored_states = []                                 #element state in explored
+        for element in explored:
+            explored_states.append((element.state))
+
+
+        neighbors = list((set(neighbors)-set(explored_states))-set(front_states))      #to remove already visited neighbors
+                                                            #   from the "neighbors" list
+
+        explored.append(node)
+        for ele in neighbors:
+            next_node = dataManage.heapNode(ele,node,manhattanDistance(ele,goal))
+            mazeFrontier.insert(next_node)
+            # print(mazeFrontier.frontier,"\n")
+
 
     return None
 
@@ -280,7 +339,7 @@ def mainGame(maze):
 
 
     drawMaze(maze,False)
-    print(maze)
+    # print(maze)
 
     solution = None
 
@@ -316,7 +375,15 @@ def mainGame(maze):
             # print(solution)
             drawPath(maze,solution)
 
-        if(buttonClick("EXIT",630,470,350,50,2,text)):
+        if(buttonClick("Greedy Best First Search",630,340,350,50,2,text)):
+            if(solution != None):
+                drawMaze(maze,True)
+                sleep(0.5)
+            solution = greedyBestFirstSearch(maze)
+            # print(solution)
+            drawPath(maze,solution)
+
+        if(buttonClick("EXIT",630,540,350,50,2,text)):
             exit()
 
         pygame.display.update()

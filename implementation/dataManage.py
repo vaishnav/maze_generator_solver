@@ -1,7 +1,27 @@
+import heapq
+
 class Node():
     def __init__(self, state, parent):
         self.state = state
         self.parent = parent
+
+class heapNode():                     #as heapq internally compare every element of tuple that's why comparision operator overloading is requried
+    def __init__(self, state, parent, priority):
+        self.state = state
+        self.parent = parent
+        self.priority = priority
+
+    def __lt__(self,other):
+        return self.priority < other.priority
+
+    def __le__(self,other):
+        return self.priority <= other.priority
+
+    def __gt__(self,other):
+        return self.priority > other.priority
+
+    def __le__(self,other):
+        return self.priority < other.priority
 
 class stack():
     def __init__(self):
@@ -34,4 +54,16 @@ class queue(stack):
 
         else:
             node = self.frontier.pop(0)
+            return node
+
+class priorityq(stack):
+    def insert(self,ele):
+        heapq.heappush(self.frontier,ele)
+
+    def remove(self):
+        if(self.isEmpty()):
+            raise Exception("Priority Queue is empty")
+
+        else:
+            node = heapq.heappop(self.frontier)
             return node
