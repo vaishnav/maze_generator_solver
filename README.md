@@ -13,6 +13,8 @@ ___
 1. Depth First Serach
 2. Breadth First Search
 3. Greedy Best first Search
+4. A* algorithms
+5. Dijkstra (note: as the maze here is in the form of unweighted graph dijkstra will work like Breadth First Search and performance would be lower than actual BFS)
 
 
 
